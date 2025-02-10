@@ -3,6 +3,7 @@ use tokens::Token;
 
 mod tokens;
 mod lexer;
+mod ast;
 fn main() {
     let input = "let x = 42 + 8";
     let mut lexer = Lexer::new(input.to_string());
