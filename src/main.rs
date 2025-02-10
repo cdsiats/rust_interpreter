@@ -1,3 +1,4 @@
+use evaluator::Evaluator;
 use lexer::Lexer;
 use parser::Parser;
 use tokens::Token;
@@ -6,20 +7,25 @@ mod tokens;
 mod lexer;
 mod ast;
 mod parser;
+mod evaluator;
 fn main() {
-    let input = "let x = 2 + 3 * 4";
+    let input = "let x = 255 + 300 * 3";
     let mut lexer = Lexer::new(input.to_string());
 
     let mut tokens = vec![];
-    while let token= lexer.next_token() {
+    loop {
+        let token = lexer.next_token();
+        tokens.push(token.clone());
         if token == Token::EOF {
             break;
         }
-        tokens.push(token);
     }
 
     let mut parser = Parser::new(tokens);
-    if let Some(statement) = parser.parse_statement() {
-        println!("{:#?}", statement);
-    }
+    let statement = parser.parse_statement().unwrap();
+
+    let mut evaluator = Evaluator::new();
+    evaluator.eval_statement(&statement);
+
+    println!("Final environment: {:?}", evaluator.env);
 }
